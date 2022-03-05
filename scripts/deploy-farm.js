@@ -21,12 +21,12 @@ async function main() {
   const chainId = await deployUtils.currentChainId()
   let [deployer] = await ethers.getSigners();
 
-  const network = chainId === 137 ? 'matic'
-      : chainId === 80001 ? 'mumbai'
+  const network = chainId === 56 ? 'bsc'
+      : chainId === 97 ? 'bsc_testnet'
           : 'localhost'
 
-  if (!deployed[chainId]) {
-    console.error('Everdragons2Genesis not deployed on', network)
+  if (!deployed[chainId] || !deployed[chainId].MoblandNFT) {
+    console.error('MoblandNFT not deployed on', network)
     process.exit(1)
   }
 
@@ -36,8 +36,8 @@ async function main() {
       'to', network
   );
 
-  const Everdragons2Genesis = await ethers.getContractFactory("Everdragons2Genesis")
-  const everdragons2Genesis = Everdragons2Genesis.attach(deployed[chainId].Everdragons2Genesis)
+  const MoblandNFT = await ethers.getContractFactory("MoblandNFT")
+  const nft = MoblandNFT.attach(deployed[chainId].MoblandNFT)
 
   const GenesisFarm = await ethers.getContractFactory("GenesisFarm")
 
@@ -48,7 +48,7 @@ async function main() {
   const maxClaimable = network === 'matic' ? 350 : 90
 
   const genesisFarm = await GenesisFarm.deploy(
-      everdragons2Genesis.address,
+      nft.address,
       maxForSale,
       maxClaimable,
       price,
@@ -59,7 +59,7 @@ async function main() {
   await genesisFarm.deployed()
   console.log("GenesisFarm deployed to:", genesisFarm.address);
 
-  await everdragons2Genesis.setManager(genesisFarm.address)
+  await nft.setManager(genesisFarm.address)
 
   console.log(`
 To verify GenesisFarm source code:
@@ -67,7 +67,7 @@ To verify GenesisFarm source code:
   npx hardhat verify --show-stack-traces \\
       --network ${network} \\
       ${genesisFarm.address}  \\
-      ${everdragons2Genesis.address} \\
+      ${nft.address} \\
       ${maxForSale} \\
       ${maxClaimable} \\
       ${price} \\

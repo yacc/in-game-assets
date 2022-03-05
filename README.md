@@ -1,4 +1,15 @@
-# Everdragons2 NFT
+# Mobland in-game assets
 
-The smart contracts for the Everdragons2 project.
-More info, at some point, at https://everdragons2.com
+A set of smart contract for in-game assets.
+
+# Copyright
+
+Forked from https://github.com/ndujaLabs/everdragons2-core
+
+(c) 2021-present, Nduja Labs LLC
+
+(c) 2022, Superpower Labs Inc.
+
+# License
+
+MIT

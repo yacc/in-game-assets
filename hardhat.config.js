@@ -48,18 +48,6 @@ module.exports = {
     ganache: {
       url: "http://localhost:7545"
     },
-    ropsten: {
-      url: `https://ropsten.infura.io/v3/${env.infuraApiKey}`,
-      accounts: [env.privateKeyTestnet]
-    },
-    kovan: {
-      url: `https://kovan.infura.io/v3/${env.infuraApiKey}`,
-      accounts: [env.privateKeyTestnet]
-    },
-    ethereum: {
-      url: `https://mainnet.infura.io/v3/${env.infuraApiKey}`,
-      accounts: [env.privateKey]
-    },
     bsc_testnet: {
       url: "https://data-seed-prebsc-1-s1.binance.org:8545",
       chainId: 97,
@@ -72,22 +60,9 @@ module.exports = {
       gasPrice: 20000000000,
       accounts: [env.privateKey]
     },
-    mumbai: {
-      url: 'https://rpc-mumbai.matic.today',
-      chainId: 80001,
-      gasPrice: 20000000000,
-      accounts: [process.env.USEMATICKEY ? env.maticKey : env.privateKeyTestnet]
-    },
-    matic: {
-      url: `https://polygon-mainnet.infura.io/v3/${env.infuraApiKey}`,
-      chainId: 137,
-      accounts: [process.env.USEMATICKEY ? env.maticKey : env.privateKey]
-    },
   },
   etherscan: {
-    // apiKey: env.etherscanKey
-    apiKey: env.polygonscanAPIKey
-    // apiKey: env.bscscanKey
+    apiKey: env.bscscanKey
   },
   gasReporter: {
     currency: 'USD',

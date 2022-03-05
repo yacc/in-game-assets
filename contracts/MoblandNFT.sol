@@ -5,37 +5,33 @@ pragma solidity 0.8.11;
 //          Emanuele Cesena <emanuele@ndujalabs.com>
 // Everdragons2, https://everdragons2.com
 
+// Modified for Mobland by Superpower Labs Inc.
+
 import "@ndujalabs/erc721playable/contracts/ERC721PlayableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-
 import "@ndujalabs/wormhole721/contracts/Wormhole721Upgradeable.sol";
 
-import "./IEverdragons2.sol";
+import "./interfaces/IMoblandNFT.sol";
 
-import "hardhat/console.sol";
+//import "hardhat/console.sol";
 
-contract Everdragons2 is
-  IEverdragons2,
+contract MoblandNFT is
+  IMoblandNFT,
   Initializable,
   ERC721Upgradeable,
   ERC721PlayableUpgradeable,
   ERC721EnumerableUpgradeable,
   Wormhole721Upgradeable
 {
-  //using Address for address;
-  address public manager;
   bool private _mintEnded;
   bool private _baseTokenURIFrozen;
-
   string private _baseTokenURI;
-  uint256 private _lastTokenId;
-
-  mapping(uint256 => bool) private _isMinted;
+  address public manager;
+  uint256 public nextTokenId;
+  uint256 public reservedMaxTokenId;
 
   modifier onlyManager() {
     require(manager != address(0) && _msgSender() == manager, "Forbidden");
@@ -43,31 +39,30 @@ contract Everdragons2 is
   }
 
   modifier canMint() {
-    require(!_mintEnded, "Minting ended or not allowed");
+    require(!_mintEnded, "Minting ended");
     _;
   }
 
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() initializer {}
 
-  function initialize(uint256 lastTokenId_, bool secondaryChain) public initializer {
-    __Wormhole721_init("Everdragons2 Genesis", "E2G");
+  function initialize(
+    string memory name,
+    string memory symbol,
+    string memory tokenUri
+  ) public initializer {
+    __Wormhole721_init(name, symbol);
     __ERC721Enumerable_init();
-    _lastTokenId = lastTokenId_;
-    if (secondaryChain) {
-      // if so, it is a bridged version of the token and cannot be minted by a manager
-      _mintEnded = true;
-    } else {
-      // Agdaroth
-      _mint(msg.sender, lastTokenId_);
-    }
-    // temporary tokenURI:
-    _baseTokenURI = "https://img.everdragons2.com/e2g/";
+    _baseTokenURI = tokenUri;
+  }
+
+  function startDistribution(uint256 nextTokenId_) external onlyOwner {
+    require(nextTokenId_ > 0, "next token Id cannot be zero");
+    nextTokenId = nextTokenId_;
+    reservedMaxTokenId = nextTokenId_ - 1;
   }
 
   function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
-
-  // The following functions are overrides required by Solidity.
 
   function _beforeTokenTransfer(
     address from,
@@ -86,48 +81,19 @@ contract Everdragons2 is
     return super.supportsInterface(interfaceId);
   }
 
-  function isMinted(uint256 tokenId) external view override returns (bool) {
-    return _isMinted[tokenId];
-  }
-
-  function lastTokenId() external view override returns (uint256) {
-    return _lastTokenId;
-  }
-
   function setManager(address manager_) external override onlyOwner canMint {
-    require(manager_ != address(0), "Manager cannot be 0x0");
+    require(manager_.code.length > 0, "Not a contract");
     manager = manager_;
   }
 
-  function mint(address recipient, uint256[] memory tokenIds) external override onlyManager canMint {
-    for (uint256 i = 0; i < tokenIds.length; i++) {
-      mint(recipient, tokenIds[i]);
-    }
-  }
-
-  function mint(address[] memory recipients, uint256[] memory tokenIds) external override onlyManager canMint {
-    for (uint256 i = 0; i < tokenIds.length; i++) {
-      mint(recipients[i], tokenIds[i]);
-    }
-  }
-
   function mint(address recipient, uint256 tokenId) public override onlyManager canMint {
-    _isMinted[tokenId] = true;
+    if (tokenId == 0) {
+      // get next not-reserved available
+      tokenId = nextTokenId++;
+    } else {
+      require(tokenId <= reservedMaxTokenId, "Token id our of range");
+    }
     _safeMint(recipient, tokenId);
-  }
-
-  function _baseURI() internal view virtual override returns (string memory) {
-    return _baseTokenURI;
-  }
-
-  function updateTokenURI(string memory uri) external override onlyOwner {
-    require(!_baseTokenURIFrozen, "baseTokenUri has been frozen");
-    // after revealing, this allows to set up a final uri
-    _baseTokenURI = uri;
-  }
-
-  function freezeTokenURI() external override onlyOwner {
-    _baseTokenURIFrozen = true;
   }
 
   function endMinting() external override onlyOwner {
@@ -138,7 +104,21 @@ contract Everdragons2 is
     return _mintEnded;
   }
 
+  function _baseURI() internal view virtual override returns (string memory) {
+    return _baseTokenURI;
+  }
+
+  function updateTokenURI(string memory uri) external override onlyOwner {
+    require(!_baseTokenURIFrozen, "baseTokenUri has been frozen");
+    // after revealing, this allows to set up a final uri, if useful
+    _baseTokenURI = uri;
+  }
+
+  function freezeTokenURI() external override onlyOwner {
+    _baseTokenURIFrozen = true;
+  }
+
   function contractURI() public view returns (string memory) {
-    return _baseURI();
+    return string(abi.encodePacked(_baseTokenURI, "0"));
   }
 }

@@ -5,21 +5,21 @@ pragma solidity 0.8.11;
 //          Emanuele Cesena <emanuele@ndujalabs.com>
 // Everdragons2, https://everdragons2.com
 
+// Modified for Mobland by Superpower Labs Inc.
+
 import "@ndujalabs/erc721playable/contracts/ERC721PlayableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@ndujalabs/wormhole721/contracts/Wormhole721Upgradeable.sol";
 
-import "./interfaces/IEverdragons2GenesisBridged.sol";
+import "./interfaces/IMoblandNFTBridged.sol";
 
 //import "hardhat/console.sol";
 
-contract Everdragons2GenesisBridged is
-  IEverdragons2GenesisBridged,
+contract MoblandNFTBridged is
+  IMoblandNFTBridged,
   Initializable,
   ERC721Upgradeable,
   ERC721PlayableUpgradeable,
@@ -32,11 +32,14 @@ contract Everdragons2GenesisBridged is
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() initializer {}
 
-  function initialize() public initializer {
-    __Wormhole721_init("Everdragons2 Genesis Token", "E2GT");
+  function initialize(
+    string memory name,
+    string memory symbol,
+    string memory tokenUri
+  ) public initializer {
+    __Wormhole721_init(name, symbol);
     __ERC721Enumerable_init();
-    // tokenURI pre-reveal
-    _baseTokenURI = "https://img.everdragons2.com/e2gt/";
+    _baseTokenURI = tokenUri;
   }
 
   function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
