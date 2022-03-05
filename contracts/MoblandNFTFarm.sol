@@ -2,9 +2,7 @@
 pragma solidity 0.8.11;
 
 // Author: Francesco Sullo <francesco@sullo.co>
-// Everdragons2 website: https://everdragons2.com
-
-// Modified for Mobland by Superpower Labs Inc.
+// (c) Superpower Labs Inc.
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
