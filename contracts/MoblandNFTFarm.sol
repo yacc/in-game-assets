@@ -21,7 +21,7 @@ interface IBlueprintCoupon {
   function tokenOfOwnerByIndex(address owner, uint256 index) external view returns (uint256);
 }
 
-contract NFTFarm is Ownable {
+contract MoblandNFTFarm is Ownable {
   using ECDSA for bytes32;
   using SafeMath for uint256;
 

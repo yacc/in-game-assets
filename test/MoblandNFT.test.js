@@ -12,7 +12,7 @@ const {
 // tests to be fixed
 
 describe("MoblandNFT", function () {
-  let MoblandNFT, nft, nftAddress, NFTFarm, farm, Coupon, coupon;
+  let MoblandNFT, nft, nftAddress, MoblandNFTFarm, farm, Coupon, coupon;
 
   let addr0 = "0x" + "0".repeat(40);
   let owner, validator, buyer1, buyer2, member1, member2, member3, member4, member5, member6, collector1, collector2;
@@ -21,7 +21,7 @@ describe("MoblandNFT", function () {
     [owner, buyer1, buyer2, buyer3, validator, member1, member2, member3, member4, member5, member6, collector1, collector2] =
       await ethers.getSigners();
     MoblandNFT = await ethers.getContractFactory("MoblandNFT");
-    NFTFarm = await ethers.getContractFactory("NFTFarm");
+    MoblandNFTFarm = await ethers.getContractFactory("MoblandNFTFarm");
     Coupon = await ethers.getContractFactory("CouponMock");
     initEthers(ethers);
   });
@@ -35,7 +35,7 @@ describe("MoblandNFT", function () {
     coupon = await Coupon.deploy();
     await coupon.deployed();
 
-    farm = await NFTFarm.deploy(nft.address, coupon.address, validator.address);
+    farm = await MoblandNFTFarm.deploy(nft.address, coupon.address, validator.address);
     await farm.deployed();
     await nft.setManager(farm.address);
   }
