@@ -12,7 +12,7 @@ const {
 // tests to be fixed
 
 describe("MoblandNFT", function () {
-  let MoblandNFT, nft, nftAddress, MoblandNFTFarm, farm, Coupon, coupon;
+  let MoblandNFT, nft, nftAddress, MoblandNFTFarm, farm, Coupon, coupon, Game, game;
 
   let addr0 = "0x" + "0".repeat(40);
   let owner, validator, buyer1, buyer2, member1, member2, member3, member4, member5, member6, collector1, collector2;
@@ -23,6 +23,7 @@ describe("MoblandNFT", function () {
     MoblandNFT = await ethers.getContractFactory("MoblandNFT");
     MoblandNFTFarm = await ethers.getContractFactory("MoblandNFTFarm");
     Coupon = await ethers.getContractFactory("CouponMock");
+    Game = await ethers.getContractFactory('GameMock')
     initEthers(ethers);
   });
 
@@ -38,6 +39,10 @@ describe("MoblandNFT", function () {
     farm = await MoblandNFTFarm.deploy(nft.address, coupon.address, validator.address);
     await farm.deployed();
     await nft.setManager(farm.address);
+
+    game = await upgrades.deployProxy('GameMock', []);
+    await game.deployed()
+
   }
 
   async function configure() {}
@@ -66,7 +71,7 @@ describe("MoblandNFT", function () {
 
       await expect(await farm.connect(member1).claimTokenFromPass(authCode, tokenId, signature))
         .to.emit(nft, "Transfer")
-        .withArgs(addr0, member1.address, 23);
+        .withArgs(addr0, member1.address, tokenId);
 
       assert.equal(await farm.usedCodes(authCode), member1.address);
     });
@@ -182,5 +187,51 @@ describe("MoblandNFT", function () {
       await farm.connect(buyer1).swapTokenFromCoupon(0);
       await assertThrowsMessage(farm.connect(buyer1).swapTokenFromCoupon(0), "no tokens here");
     });
+  });
+
+  describe.only("#game simulation", async function () {
+
+    beforeEach(async function () {
+      await initAndDeploy();
+    });
+
+    it("should member1 mint a token that at some moment goes in a coma and later dies", async function () {
+      const authCode = ethers.utils.id("a" + Math.random());
+      const tokenId = 23;
+      const holder = member1.address
+
+      const hash = await farm.encodeForSignature(holder, authCode, tokenId);
+      const signature = await signPackedData(hash);
+
+      await farm.connect(member1).claimTokenFromPass(authCode, tokenId, signature)
+
+      await nft.connect(member1).initAttributes(tokenId, holder)
+      // the initial attributes are all set to zero, in this example,
+      // so there is no need for an initial setup
+
+      let attributes = await nft.attributesOf(tokenId, holder)
+      expect(attributes.attributes[0]).to.equal(0)
+      expect(attributes.attributes[1]).to.equal(0)
+
+      // an NFT in a coma must be healed in 24 hours, so, we need to save the timestamp
+      // we can make a decent approximation in a single uint8
+
+      let ts = parseInt((await getTimestamp()) / Math.pow(255, 3))
+
+      await game.updateAttributes(nft, tokenId, [ 0, 1],
+          [
+              1, // coma
+              ts
+      ])
+
+      attributes = await nft.attributesOf(tokenId, holder)
+      expect(attributes.attributes[0]).to.equal(0)
+      expect(attributes.attributes[1]).to.equal(0)
+
+
+
+
+    });
+
   });
 });
