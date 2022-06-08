@@ -58,7 +58,7 @@ contract SuperpowerNFTBase is
   }
 
   function updateTokenURI(string memory uri) external override onlyOwner {
-    require(!_baseTokenURIFrozen, "baseTokenUri has been frozen");
+    require(!_baseTokenURIFrozen, "SuperpowerNFTBase: baseTokenUri has been frozen");
     // after revealing, this allows to set up a final uri
     _baseTokenURI = uri;
   }

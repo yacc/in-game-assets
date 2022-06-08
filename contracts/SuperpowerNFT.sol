@@ -18,12 +18,12 @@ contract SuperpowerNFT is ISuperpowerNFT, SuperpowerNFTBase {
   mapping(address => bool) public minters;
 
   modifier onlyMinter() {
-    require(_msgSender() != address(0) && minters[_msgSender()], "SuperpowerNFT: Forbidden");
+    require(_msgSender() != address(0) && minters[_msgSender()], "SuperpowerNFT: forbidden");
     _;
   }
 
   modifier canMint(uint256 amount) {
-    require(_nextTokenId > 0 && !_mintEnded && _nextTokenId + amount < _maxSupply + 2, "SuperpowerNFT: Minting ended or not started yet");
+    require(_nextTokenId > 0 && !_mintEnded && _nextTokenId + amount < _maxSupply + 2, "SuperpowerNFT: can not mint");
     _;
   }
 
@@ -49,12 +49,12 @@ contract SuperpowerNFT is ISuperpowerNFT, SuperpowerNFTBase {
   }
 
   function setMinter(address minter_, bool enabled) external override onlyOwner {
-    require(minter_.code.length > 0, "Not a contract");
+    require(minter_.code.length > 0, "SuperpowerNFT: not a contract");
     minters[minter_] = enabled;
   }
 
   function mint(address to, uint256 amount) public override onlyMinter canMint(amount) {
-    require(_nextTokenId + amount - 1 < _maxSupply + 1, "Token id our of range");
+    require(_nextTokenId + amount - 1 < _maxSupply + 1, "SuperpowerNFT: token id our of range");
     for (uint256 i = 0; i < amount; i++) {
       _safeMint(to, _nextTokenId++);
     }
