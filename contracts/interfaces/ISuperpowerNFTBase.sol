@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.11;
 
-// Author: Francesco Sullo <francesco@sullo.co>
-// Everdragons2, https://everdragons2.com
+// Author: Francesco Sullo <francesco@superpower.io>
 
-interface IMoblandNFTBridged {
+interface ISuperpowerNFTBase {
   function updateTokenURI(string memory uri) external;
 
   function freezeTokenURI() external;
+
+  function contractURI() external view returns (string memory);
 }

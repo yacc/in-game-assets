@@ -21,31 +21,27 @@ async function main() {
       'to', network
   );
 
+  const { NAME, SYMBOL, TOKEN_URI } = process.env
+  if (!NAME || !SYMBOL || !TOKEN_URI) {
+    console.error("Missing parameters")
+    process.exit(1);
+  }
+
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
-  MoblandNFT = await ethers.getContractFactory("MoblandNFT")
-  nft = await upgrades.deployProxy(MoblandNFT, [
-    "Mobland Character",
-    "MLC",
-    "https://s3.mob.land/characters/"
+  const SuperpowerNFT = await ethers.getContractFactory("SuperpowerNFT")
+  const nft = await upgrades.deployProxy(SuperpowerNFT, [
+    NAME,
+    SYMBOL,
+    TOKEN_URI
   ])
-
+  console.debug("Tx:", nft.deployTransaction.hash);
   await nft.deployed()
-  console.log("MoblandNFT deployed to:", nft.address);
+  console.log("SuperpowerNFT deployed to:", nft.address);
 
-  console.log(`
-To verify MoblandNFT source code:
+  console.log("To verify SuperpowerNFT flatten the code and sumbit it for the implementation")
 
-  npx hardhat verify --show-stack-traces \\
-      --network ${network} \\
-      ${nft.address} \\
-      "Mobland Character" \\
-      "MLC" \\
-      "https://s3.mob.land/characters/"
-
-`)
-
-  await deployUtils.saveDeployed(chainId, ['MoblandNFT'], [nft.address])
+  await deployUtils.saveDeployed(chainId, ['SuperpowerNFT'], [nft.address])
 
 }
 

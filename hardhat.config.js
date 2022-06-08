@@ -5,7 +5,8 @@ require('@openzeppelin/hardhat-upgrades');
 const requireOrMock = require('require-or-mock')
 
 let env = requireOrMock('env.js', {
-
+  privateKey: "ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
+  privateKeyTestnet: "ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
 });
 
 if (process.env.GAS_REPORT === 'yes') {

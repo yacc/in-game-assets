@@ -1,12 +1,10 @@
-# Mobland in-game assets
+# Superpower in-game assets
 
 A set of smart contract for in-game assets.
 
 # Copyright
 
-Forked from https://github.com/ndujaLabs/everdragons2-core
-
-(c) 2021-present, Nduja Labs LLC
+Inspired by https://github.com/ndujaLabs/everdragons2-core, (c) 2021-present, Nduja Labs LLC
 
 (c) 2022, Superpower Labs Inc.
 

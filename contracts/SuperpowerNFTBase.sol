@@ -1,48 +1,40 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.11;
 
-// Authors: Francesco Sullo <francesco@sullo.co>
-//          Emanuele Cesena <emanuele@ndujalabs.com>
-// Everdragons2, https://everdragons2.com
-
-// Modified for Mobland by Superpower Labs Inc.
+// Inspired by Everdragons2 NFTs, https://everdragons2.com
+// Authors: Francesco Sullo <francesco@superpower.io>
+// (c) Superpower Labs Inc.
 
 import "@ndujalabs/erc721playable/contracts/ERC721PlayableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@ndujalabs/wormhole721/contracts/Wormhole721Upgradeable.sol";
 
-import "./interfaces/IMoblandNFTBridged.sol";
+import "./interfaces/ISuperpowerNFTBase.sol";
 
 //import "hardhat/console.sol";
 
-contract MoblandNFTBridged is
-  IMoblandNFTBridged,
+contract SuperpowerNFTBase is
+  ISuperpowerNFTBase,
   Initializable,
   ERC721Upgradeable,
   ERC721PlayableUpgradeable,
   ERC721EnumerableUpgradeable,
   Wormhole721Upgradeable
 {
-  bool private _baseTokenURIFrozen;
   string private _baseTokenURI;
+  bool private _baseTokenURIFrozen;
 
-  /// @custom:oz-upgrades-unsafe-allow constructor
-  constructor() initializer {}
-
-  function initialize(
+  // solhint-disable-next-line
+  function __SuperpowerNFTBase_init(
     string memory name,
     string memory symbol,
     string memory tokenUri
-  ) public initializer {
+  ) internal initializer {
     __Wormhole721_init(name, symbol);
     __ERC721Enumerable_init();
     _baseTokenURI = tokenUri;
   }
-
-  function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
   function _beforeTokenTransfer(
     address from,
@@ -75,7 +67,7 @@ contract MoblandNFTBridged is
     _baseTokenURIFrozen = true;
   }
 
-  function contractURI() public view returns (string memory) {
+  function contractURI() public view override returns (string memory) {
     return _baseURI();
   }
 }
