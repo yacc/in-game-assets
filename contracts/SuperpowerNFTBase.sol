@@ -68,6 +68,6 @@ contract SuperpowerNFTBase is
   }
 
   function contractURI() public view override returns (string memory) {
-    return _baseURI();
+    return string(abi.encodePacked(_baseTokenURI, "0"));
   }
 }
