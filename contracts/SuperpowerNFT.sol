@@ -23,7 +23,7 @@ contract SuperpowerNFT is ISuperpowerNFT, SuperpowerNFTBase {
   }
 
   modifier canMint(uint256 amount) {
-    require(_nextTokenId > 0 && !_mintEnded && _nextTokenId + amount < _maxSupply + 2, "SuperpowerNFT: Minting ended");
+    require(_nextTokenId > 0 && !_mintEnded && _nextTokenId + amount < _maxSupply + 2, "SuperpowerNFT: Minting ended or not started yet");
     _;
   }
 
