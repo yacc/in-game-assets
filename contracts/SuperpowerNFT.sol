@@ -67,10 +67,9 @@ contract SuperpowerNFT is ISuperpowerNFT, SuperpowerNFTBase {
   }
 
   function mint(address to, uint256 amount) public override onlyMinter canMint(amount) {
-    uint id = _wl.getIdByBurner(address(this));
     if (block.timestamp < _whitelistActiveUntil) {
       // verify if whitelisted
-      require(_wl.balanceOf(to, id) >= amount, "SuperpowerNFT: not enough slot in whitelist");
+      require(_wl.balanceOf(to, _wl.getIdByBurner(address(this))) >= amount, "SuperpowerNFT: not enough slot in whitelist");
     }
     require(_nextTokenId + amount - 1 < _maxSupply + 1, "SuperpowerNFT: token id our of range");
     for (uint256 i = 0; i < amount; i++) {
@@ -78,7 +77,7 @@ contract SuperpowerNFT is ISuperpowerNFT, SuperpowerNFTBase {
     }
     if (block.timestamp < _whitelistActiveUntil) {
       // burn whitelisted token
-      _wl.burn(to, id, amount);
+      _wl.burn(to, _wl.getIdByBurner(address(this)), amount);
     }
   }
 
