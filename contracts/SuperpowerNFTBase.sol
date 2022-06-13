@@ -87,11 +87,11 @@ contract SuperpowerNFTBase is
 
   // stakes
 
-  function isStaked(uint256 tokenId) public override view returns (bool) {
+  function isStaked(uint256 tokenId) public view override returns (bool) {
     return staked[tokenId] != address(0);
   }
 
-  function getStaker(uint256 tokenId) external override view returns (address) {
+  function getStaker(uint256 tokenId) external view override returns (address) {
     return staked[tokenId];
   }
 
@@ -162,6 +162,4 @@ contract SuperpowerNFTBase is
   }
 
   // manage transfer
-
-
 }

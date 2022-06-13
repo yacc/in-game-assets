@@ -7,15 +7,20 @@ pragma solidity 0.8.11;
 
 import "./SuperpowerNFTBase.sol";
 import "./interfaces/ISuperpowerNFT.sol";
+import "./WhitelistSlot.sol";
 
 //import "hardhat/console.sol";
 
 contract SuperpowerNFT is ISuperpowerNFT, SuperpowerNFTBase {
+  using AddressUpgradeable for address;
   uint256 private _nextTokenId;
   uint256 private _maxSupply;
   bool private _mintEnded;
 
   mapping(address => bool) public minters;
+
+  uint256 private _whitelistActiveUntil;
+  WhitelistSlot private _wl;
 
   modifier onlyMinter() {
     require(_msgSender() != address(0) && minters[_msgSender()], "SuperpowerNFT: forbidden");
@@ -40,6 +45,14 @@ contract SuperpowerNFT is ISuperpowerNFT, SuperpowerNFTBase {
 
   function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
+  function setWhitelist(address wl, uint256 activeUntil) external onlyOwner {
+    if (wl != address(0)) {
+      require(wl.isContract(), "SuperpowerNFT: wl not a contract");
+      _wl = WhitelistSlot(wl);
+    } // else we just want to update period and ERC1155 id on WhitelistSlot
+    _whitelistActiveUntil = activeUntil;
+  }
+
   function setMaxSupply(uint256 maxSupply_) external onlyOwner {
     if (_nextTokenId == 0) {
       _nextTokenId = 1;
@@ -54,9 +67,18 @@ contract SuperpowerNFT is ISuperpowerNFT, SuperpowerNFTBase {
   }
 
   function mint(address to, uint256 amount) public override onlyMinter canMint(amount) {
+    uint id = _wl.getIdByBurner(address(this));
+    if (block.timestamp < _whitelistActiveUntil) {
+      // verify if whitelisted
+      require(_wl.balanceOf(to, id) >= amount, "SuperpowerNFT: not enough slot in whitelist");
+    }
     require(_nextTokenId + amount - 1 < _maxSupply + 1, "SuperpowerNFT: token id our of range");
     for (uint256 i = 0; i < amount; i++) {
       _safeMint(to, _nextTokenId++);
+    }
+    if (block.timestamp < _whitelistActiveUntil) {
+      // burn whitelisted token
+      _wl.burn(to, id, amount);
     }
   }
 
