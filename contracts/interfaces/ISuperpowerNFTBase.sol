@@ -13,6 +13,7 @@ interface ISuperpowerNFTBase {
   function isStaked(uint256 tokenID) external view returns (bool);
 
   function getStaker(uint256 tokenID) external view returns (address);
+
   function setPool(address pool) external;
 
   function removePool(address pool) external;
