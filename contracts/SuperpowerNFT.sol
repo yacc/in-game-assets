@@ -62,7 +62,7 @@ contract SuperpowerNFT is ISuperpowerNFT, SuperpowerNFTBase {
   }
 
   function setMinter(address minter_, bool enabled) external override onlyOwner {
-    require(minter_.code.length > 0, "SuperpowerNFT: not a contract");
+    require(minter_.isContract(), "SuperpowerNFT: not a contract");
     minters[minter_] = enabled;
   }
 
