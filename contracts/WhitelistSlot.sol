@@ -45,8 +45,8 @@ contract WhitelistSlot is ERC1155, Ownable {
   function burn(
     address account,
     uint256 id,
-    uint256 value
+    uint256 amount
   ) public virtual onlyBurner(id) {
-    _burn(account, id, value);
+    _burn(account, id, amount);
   }
 }
