@@ -67,26 +67,25 @@ contract SuperpowerNFT is ISuperpowerNFT, SuperpowerNFTBase {
   }
 
   function mint(address to, uint256 amount) public override onlyMinter canMint(amount) {
-    if (block.timestamp < _whitelistActiveUntil) {
-      // verify if whitelisted
-      require(_wl.balanceOf(to, _wl.getIdByBurner(address(this))) >= amount, "SuperpowerNFT: not enough slot in whitelist");
-    }
-    require(_nextTokenId + amount - 1 < _maxSupply + 1, "SuperpowerNFT: token id our of range");
     for (uint256 i = 0; i < amount; i++) {
       _safeMint(to, _nextTokenId++);
     }
+    _burnWhitelistSlot(to, amount);
+  }
+
+  function _burnWhitelistSlot(address to, uint256 amount) internal {
     if (block.timestamp < _whitelistActiveUntil) {
-      // burn whitelisted token
+      require(_wl.balanceOf(to, _wl.getIdByBurner(address(this))) >= amount, "SuperpowerNFT: not enough slot in whitelist");
       _wl.burn(to, _wl.getIdByBurner(address(this)), amount);
     }
   }
 
-  function mintAndInit(address to, Attributes memory initialAttributes, address player) public override onlyMinter canMint(1) {
+  function mintAndInit(address to, address player, uint8[31] calldata initialAttributes) public override onlyMinter canMint(1) {
     require(player.isContract(), "SuperPowerNFT: player not a contract");
-    _attributes[_nextTokenId][player] = Attributes({version: 1, attributes: initialAttributes.attributes});
-    mint(to, 1);
+    _attributes[_nextTokenId][player] = Attributes({version: 1, attributes: initialAttributes});
+    _safeMint(to, _nextTokenId++);
+    _burnWhitelistSlot(to, 1);
   }
-
 
   function endMinting() external override onlyOwner {
     _mintEnded = true;

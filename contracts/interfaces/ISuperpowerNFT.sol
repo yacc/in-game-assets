@@ -13,7 +13,7 @@ interface ISuperpowerNFT {
 
   function mint(address recipient, uint256 amount) external;
 
-  function mintAndInit(address to, IERC721Playable.Attributes memory initialAttributes, address player) external;
+  function mintAndInit(address to, address player, uint8[31] calldata initialAttributes) external;
 
   function endMinting() external;
 
