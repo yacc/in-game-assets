@@ -80,10 +80,12 @@ contract SuperpowerNFT is ISuperpowerNFT, SuperpowerNFTBase {
     }
   }
 
-  function mintAndInit(address to, address player, uint8[31] calldata initialAttributes) public override onlyMinter canMint(1) {
-    require(player.isContract(), "SuperPowerNFT: player not a contract");
-    _attributes[_nextTokenId][player] = Attributes({version: 1, attributes: initialAttributes});
-    _safeMint(to, _nextTokenId++);
+  function mintAndInit(
+    address to,
+    address player,
+    uint8[31] calldata initialAttributes
+  ) public override onlyMinter canMint(1) {
+    _initAttributesAndSafeMint(to, _nextTokenId++, player, initialAttributes);
     _burnWhitelistSlot(to, 1);
   }
 

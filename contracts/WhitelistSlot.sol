@@ -28,7 +28,7 @@ contract WhitelistSlot is ERC1155, Ownable {
     _burners[burner] = id;
   }
 
-  function getIdByBurner(address burner) public view returns(uint) {
+  function getIdByBurner(address burner) public view returns (uint256) {
     return _burners[burner];
   }
 
