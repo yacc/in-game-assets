@@ -8,6 +8,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 
 import "./interfaces/ISuperpowerNFT.sol";
 
@@ -15,8 +16,9 @@ import "./interfaces/ISuperpowerNFT.sol";
 
 contract NftFarm is Initializable, UUPSUpgradeable, OwnableUpgradeable {
   using AddressUpgradeable for address;
+  using SafeMathUpgradeable for uint256;
 
-  event NewPriceFor(uint8 nftId, uint price);
+  event NewPriceFor(uint8 nftId, uint256 price);
   event FarmerSetFor(uint8 nftId, address farmer);
   event FarmerRemovedFor(uint8 nftId, address farmer);
   event NewNftForSale(uint8 nftId, address nft);
@@ -26,9 +28,9 @@ contract NftFarm is Initializable, UUPSUpgradeable, OwnableUpgradeable {
   mapping(address => uint8) private _nftsByAddress;
   uint8 private _lastNft;
   mapping(uint8 => address) private _farmers;
-  mapping(uint8 => uint) private _prices;
+  mapping(uint8 => uint256) private _prices;
 
-  uint public proceedsBalance;
+  uint256 public proceedsBalance;
 
   modifier onlyFarmer(uint8 nftId) {
     require(nftIdByFarmer(_msgSender()) == nftId, "NftFarm: not a farmer for this nft");
@@ -71,10 +73,10 @@ contract NftFarm is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     emit FarmerRemovedFor(nftId, farmer);
   }
 
-  function setPrice(uint8 nftId, uint price) external onlyOwner {
-    require(_nftsByAddress[nftId] > 0, "NftFarm: token not found");
+  function setPrice(uint8 nftId, uint256 price) external onlyOwner {
+    require(address(_nfts[nftId]) != address(0), "NftFarm: token not found");
     _prices[nftId] = price;
-    emit NewPriceFor(nftIf, price);
+    emit NewPriceFor(nftId, price);
   }
 
   function nftIdByFarmer(address farmer) public view returns (uint8) {
@@ -88,9 +90,8 @@ contract NftFarm is Initializable, UUPSUpgradeable, OwnableUpgradeable {
 
   function buyTokens(uint8 nftId, uint256 amount) external payable onlyFarmer(nftId) {
     require(msg.value >= _prices[nftId].mul(amount), "NftFarm: insufficient payment");
-    require(_nfts[nftId].canMintAmount(amount), "NftFarm: not enough tokens left");
     proceedsBalance += msg.value;
-    _nfts[nftId].mintAndInit(to, amount);
+    _nfts[nftId].mintAndInit(_msgSender(), amount);
   }
 
   function withdrawProceeds(address beneficiary, uint256 amount) public onlyOwner {
@@ -102,5 +103,4 @@ contract NftFarm is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     (bool success, ) = beneficiary.call{value: amount}("");
     require(success);
   }
-
 }

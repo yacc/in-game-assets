@@ -17,14 +17,14 @@ contract SuperpowerNFT is ISuperpowerNFT, SuperpowerNFTBase {
   uint256 private _maxSupply;
   bool private _mintEnded;
 
-  mapping(address => bool) public minters;
+  mapping(address => bool) public farmers;
 
   uint256 private _whitelistActiveUntil;
   WhitelistSlot private _wl;
   address public defaultPlayer;
 
-  modifier onlyMinter() {
-    require(_msgSender() != address(0) && minters[_msgSender()], "SuperpowerNFT: forbidden");
+  modifier onlyFarmer() {
+    require(_msgSender() != address(0) && farmers[_msgSender()], "SuperpowerNFT: forbidden");
     _;
   }
 
@@ -67,16 +67,16 @@ contract SuperpowerNFT is ISuperpowerNFT, SuperpowerNFTBase {
     _maxSupply = maxSupply_;
   }
 
-  function setMinter(address minter_, bool enabled) external override onlyOwner {
-    require(minter_.isContract(), "SuperpowerNFT: not a contract");
-    minters[minter_] = enabled;
+  function setFarmer(address farmer_, bool enabled) external override onlyOwner {
+    require(farmer_.isContract(), "SuperpowerNFT: not a contract");
+    farmers[farmer_] = enabled;
   }
 
-  function canMintAmount(uint amount) public view returns (bool) {
+  function canMintAmount(uint256 amount) public view returns (bool) {
     return _nextTokenId > 0 && !_mintEnded && _nextTokenId + amount < _maxSupply + 2;
   }
 
-  function mint(address to, uint256 amount) external override onlyMinter canMint(amount) {
+  function mint(address to, uint256 amount) external override onlyFarmer canMint(amount) {
     for (uint256 i = 0; i < amount; i++) {
       _safeMint(to, _nextTokenId++);
     }
@@ -94,13 +94,13 @@ contract SuperpowerNFT is ISuperpowerNFT, SuperpowerNFTBase {
     address to,
     address player,
     uint8[31] memory initialAttributes
-  ) public override onlyMinter canMint(1) {
+  ) public override onlyFarmer canMint(1) {
     _initAttributesAndSafeMint(to, _nextTokenId++, player, initialAttributes);
     _burnWhitelistSlot(to, 1);
   }
 
   // empty attributes
-  function mintAndInit(address to, uint256 amount) external override onlyMinter canMint(1) {
+  function mintAndInit(address to, uint256 amount) external override onlyFarmer canMint(1) {
     require(defaultPlayer != address(0), "SuperpowerNFT: defaultPlayer not set");
     for (uint256 i = 0; i < amount; i++) {
       mintInitAndFill(to, defaultPlayer, _emptyAttributesArray());
