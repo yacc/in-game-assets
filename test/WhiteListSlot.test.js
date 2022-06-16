@@ -23,7 +23,7 @@ describe("WhiteList", function () {
     wl = await Whitelist.deploy()
     await wl.deployed();
 
-    burner = await BurnerMock.deploy()
+    burner = await BurnerMock.deploy(wl.address)
     await burner.deployed();
 
   }
@@ -60,18 +60,16 @@ describe("WhiteList", function () {
 
     it("should batch mint", async function () {
       await wl.setBurnerForID(burner.address , 1)
-      let ids = [1,3]
-      let ammounts= [100,50]
+      const ids = [1,3]
+      const ammounts= [100,50]
+      const burnAmmount = 10
       await wl.mintBatch(holder.address,ids,ammounts,[])
 
-      let balance = await wl.balanceOf(holder.address,ids[0])
-      console.log(burner)
-      
-      // console.log(holder)
+      const balance = await wl.balanceOf(holder.address,ids[0])
+      await burner.burn(holder.address,1,burnAmmount)
+      const balance2 = await wl.balanceOf(holder.address,ids[0])
 
-    await wl.connect(burner).burn(holder.address,1,10)
-
-    let balance2 = await wl.balanceOf(holder.address,ids[0])
+      expect(balance2).equal(balance.sub(burnAmmount))
 
         
   });
