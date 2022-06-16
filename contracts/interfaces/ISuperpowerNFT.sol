@@ -19,10 +19,7 @@ interface ISuperpowerNFT {
     uint8[31] memory initialAttributes
   ) external;
 
-  function mintAndInit(
-    address to,
-    address player
-  ) external;
+  function mintAndInit(address to, address player) external;
 
   function endMinting() external;
 
