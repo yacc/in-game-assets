@@ -41,7 +41,7 @@ describe("SuperpowerNFT", function () {
 
   async function configure() {
     await nft.setMaxSupply(1000)
-    await nft.setMinter(farm.address, true)
+    await nft.setFarmer(farm.address, true)
   }
 
   describe("constructor and initialization", async function () {
@@ -50,7 +50,7 @@ describe("SuperpowerNFT", function () {
     });
 
     it("should revert if not authorized", async function () {
-      await expect(await nft.minters(farm.address)).equal(false);
+      await expect(await nft.farmers(farm.address)).equal(false);
     });
   });
 
