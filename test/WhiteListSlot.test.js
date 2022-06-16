@@ -43,10 +43,11 @@ describe("WhiteList", function () {
     });
 
     it("should check set burner and get ID", async function () {
-      await wl.setBurnerForID(burner.address , 55)
+    await wl.setBurnerForID(burner.address , 55)
     expect(await wl.getIdByBurner(burner.address)).equal(55)
     await wl.setBurnerForID(burner.address , 100)
     expect(await wl.getIdByBurner(burner.address)).equal(100)
+    expect(wl.setBurnerForID(holder.address , 100)).revertedWith("WhitelistSlot: burner not a contract");
       });
 
     it("should batch mint", async function () {
@@ -58,20 +59,26 @@ describe("WhiteList", function () {
       expect(await wl.balanceOf(holder.address,ids[1])).equal(ammounts[1])
         });
 
-    it("should batch mint", async function () {
-      await wl.setBurnerForID(burner.address , 1)
+
+    it("should mint and burn", async function () {
       const ids = [1,3]
       const ammounts= [100,50]
       const burnAmmount = 10
       await wl.mintBatch(holder.address,ids,ammounts,[])
+      await wl.setBurnerForID(burner.address , ids[0])
 
-      const balance = await wl.balanceOf(holder.address,ids[0])
-      await burner.burn(holder.address,1,burnAmmount)
-      const balance2 = await wl.balanceOf(holder.address,ids[0])
 
+      let balance = await wl.balanceOf(holder.address,ids[0])
+      await burner.burn(holder.address,ids[0],burnAmmount)
+      let balance2 = await wl.balanceOf(holder.address,ids[0])
       expect(balance2).equal(balance.sub(burnAmmount))
-
-        
+      balance = await wl.balanceOf(holder.address,ids[1])
+      expect( burner.burn(holder.address,ids[1],burnAmmount)).revertedWith("Not the final NFT");
+      await wl.setBurnerForID(burner.address , ids[1])
+      await burner.burn(holder.address,ids[1],burnAmmount) 
+      balance2 = await wl.balanceOf(holder.address,ids[1])
+      expect(balance2).equal(balance.sub(burnAmmount))
+            
   });
 
   });
