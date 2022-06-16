@@ -67,18 +67,34 @@ contract SuperpowerNFT is ISuperpowerNFT, SuperpowerNFTBase {
   }
 
   function mint(address to, uint256 amount) public override onlyMinter canMint(amount) {
-    if (block.timestamp < _whitelistActiveUntil) {
-      // verify if whitelisted
-      require(_wl.balanceOf(to, _wl.getIdByBurner(address(this))) >= amount, "SuperpowerNFT: not enough slot in whitelist");
-    }
-    require(_nextTokenId + amount - 1 < _maxSupply + 1, "SuperpowerNFT: token id our of range");
     for (uint256 i = 0; i < amount; i++) {
       _safeMint(to, _nextTokenId++);
     }
+    _burnWhitelistSlot(to, amount);
+  }
+
+  function _burnWhitelistSlot(address to, uint256 amount) internal {
     if (block.timestamp < _whitelistActiveUntil) {
-      // burn whitelisted token
+      require(_wl.balanceOf(to, _wl.getIdByBurner(address(this))) >= amount, "SuperpowerNFT: not enough slot in whitelist");
       _wl.burn(to, _wl.getIdByBurner(address(this)), amount);
     }
+  }
+
+  function mintInitAndFill(
+    address to,
+    address player,
+    uint8[31] memory initialAttributes
+  ) public override onlyMinter canMint(1) {
+    _initAttributesAndSafeMint(to, _nextTokenId++, player, initialAttributes);
+    _burnWhitelistSlot(to, 1);
+  }
+
+  // empty attributes
+  function mintAndInit(
+    address to,
+    address player
+  ) public override onlyMinter canMint(1) {
+    mintInitAndFill(to, player, _emptyAttributesArray());
   }
 
   function endMinting() external override onlyOwner {

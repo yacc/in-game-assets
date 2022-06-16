@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@ndujalabs/erc721playable': ^0.3.0
+  '@ndujalabs/erc721playable': 0.6.0
   '@ndujalabs/wormhole-tunnel': ^0.3.5
   '@ndujalabs/wormhole721': ^0.5.2
   '@nomiclabs/hardhat-ethers': ^2.0.3
@@ -32,7 +32,7 @@ specifiers:
   typescript: ^4.7.3
 
 devDependencies:
-  '@ndujalabs/erc721playable': 0.3.1
+  '@ndujalabs/erc721playable': 0.6.0
   '@ndujalabs/wormhole-tunnel': 0.3.5
   '@ndujalabs/wormhole721': 0.5.2
   '@nomiclabs/hardhat-ethers': 2.0.4_ethers@5.5.4+hardhat@2.8.3
@@ -573,8 +573,8 @@ packages:
     resolution: {integrity: sha512-eMk0b9ReBbV23xXU693TAIrLyeO5iTgBZGSJfpqriG8UkYvr/hC9u9pyMlAakDNHWmbhMZCDs6KQO0jzKD8OTw==}
     dev: true
 
-  /@ndujalabs/erc721playable/0.3.1:
-    resolution: {integrity: sha512-2jdVcBeobYje5ECpTzVgBOJS/KBF28rOIEKzXPNo5N3/NGr+7g6ZJEjZRAUesAt86HGkiuv6mk5ZSsBYIVj/kw==}
+  /@ndujalabs/erc721playable/0.6.0:
+    resolution: {integrity: sha512-zi8LFiQUUim0QAjMJDh2rjOmrMNd5uVJabTxQ0uI0z3CPntLa1/VhjVUMgoz2vwYt5i7BNVxurI9UKpzseijQw==}
     dependencies:
       '@openzeppelin/contracts': 4.5.0
       '@openzeppelin/contracts-upgradeable': 4.5.0

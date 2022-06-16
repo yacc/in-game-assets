@@ -14,7 +14,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@ndujalabs/erc721playable": "^0.3.0",
+    "@ndujalabs/erc721playable": "0.6.0",
     "@ndujalabs/wormhole-tunnel": "^0.3.5",
     "@ndujalabs/wormhole721": "^0.5.2",
     "@nomiclabs/hardhat-ethers": "^2.0.3",
