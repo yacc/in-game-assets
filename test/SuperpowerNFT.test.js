@@ -36,8 +36,6 @@ describe("SuperpowerNFT", function () {
     game = await upgrades.deployProxy(Game, []);
     await game.deployed();
 
-    wl = await Whitelist.deploy()
-    await wl.deployed();
 
   }
 

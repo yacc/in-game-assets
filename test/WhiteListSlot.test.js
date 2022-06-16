@@ -28,7 +28,7 @@ describe("WhiteList", function () {
 
   }
 
-  describe.only("Whitelist Test", async function () {
+  describe("Whitelist Test", async function () {
     beforeEach(async function () {
       await initAndDeploy();
     });
@@ -36,10 +36,10 @@ describe("WhiteList", function () {
 
     it("should check if set URI sets URI", async function () {
     expect(await wl.uri(0)).equal("")
-    await wl.setURI("hi")
-    expect(await wl.uri(0)).equal("hi")
-    await wl.setURI("WHITELIST")
-    expect(await wl.uri(0)).equal("WHITELIST")
+    await wl.setURI("https://s3.mob.land/Whitelist")
+    expect(await wl.uri(0)).equal("https://s3.mob.land/Whitelist")
+    await wl.setURI("https://s3.mob.land/WHITE")
+    expect(await wl.uri(0)).equal("https://s3.mob.land/WHITE")
     });
 
     it("should check set burner and get ID", async function () {
