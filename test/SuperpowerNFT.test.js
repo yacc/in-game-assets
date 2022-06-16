@@ -19,6 +19,7 @@ describe("SuperpowerNFT", function () {
     SuperpowerNFTBridged = await ethers.getContractFactory("SuperpowerNFTBridged");
     FarmMock = await ethers.getContractFactory("FarmMock");
     Game = await ethers.getContractFactory("PlayerMockUpgradeable");
+
     initEthers(ethers);
   });
 
@@ -34,6 +35,8 @@ describe("SuperpowerNFT", function () {
 
     game = await upgrades.deployProxy(Game, []);
     await game.deployed();
+
+
   }
 
   async function configure() {
@@ -107,5 +110,7 @@ describe("SuperpowerNFT", function () {
       assert.isTrue(await game.isNFTPlayable(nft.address));
       expect(game.isNFTPlayable(farm.address)).reverted;
     });
+
+
   });
 });
