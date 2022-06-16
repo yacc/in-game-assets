@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.11;
 
+import "@ndujalabs/erc721playable/contracts/IERC721Playable.sol";
+
 // Authors: Francesco Sullo <francesco@superpower.io>
 // (c) Superpower Labs Inc
 
@@ -10,6 +12,17 @@ interface ISuperpowerNFT {
   function setMinter(address minter_, bool enabled) external;
 
   function mint(address recipient, uint256 amount) external;
+
+  function mintInitAndFill(
+    address to,
+    address player,
+    uint8[31] memory initialAttributes
+  ) external;
+
+  function mintAndInit(
+    address to,
+    address player
+  ) external;
 
   function endMinting() external;
 
