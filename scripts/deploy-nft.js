@@ -41,8 +41,8 @@ async function main() {
 
   console.log("To verify SuperpowerNFT flatten the code and sumbit it for the implementation")
 
-  await deployUtils.saveDeployed(chainId, ['SuperpowerNFT'], [nft.address])
-
+  let prefix = /turf/i.test(NAME) ? "TurfToken" : /farm/i.test(NAME) ? "FarmToken" : SYMBOL;
+  await deployUtils.saveDeployed(chainId, [`${prefix}|SuperpowerNFT`], [nft.address])
 }
 
 // We recommend this pattern to be able to use async/await everywhere
