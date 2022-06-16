@@ -80,13 +80,21 @@ contract SuperpowerNFT is ISuperpowerNFT, SuperpowerNFTBase {
     }
   }
 
-  function mintAndInit(
+  function mintInitAndFill(
     address to,
     address player,
-    uint8[31] calldata initialAttributes
+    uint8[31] memory initialAttributes
   ) public override onlyMinter canMint(1) {
     _initAttributesAndSafeMint(to, _nextTokenId++, player, initialAttributes);
     _burnWhitelistSlot(to, 1);
+  }
+
+  // empty attributes
+  function mintAndInit(
+    address to,
+    address player
+  ) public override onlyMinter canMint(1) {
+    mintInitAndFill(to, player, _emptyAttributesArray());
   }
 
   function endMinting() external override onlyOwner {
