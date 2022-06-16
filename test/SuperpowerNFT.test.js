@@ -12,7 +12,6 @@ describe("SuperpowerNFT", function () {
   let FarmMock, farm;
   let Game, game;
   let owner, holder;
-  let Whitelist, wl;
 
   before(async function () {
     [owner, holder] = await ethers.getSigners();
@@ -20,7 +19,6 @@ describe("SuperpowerNFT", function () {
     SuperpowerNFTBridged = await ethers.getContractFactory("SuperpowerNFTBridged");
     FarmMock = await ethers.getContractFactory("FarmMock");
     Game = await ethers.getContractFactory("PlayerMockUpgradeable");
-    Whitelist = await ethers.getContractFactory("WhitelistSlot");
 
     initEthers(ethers);
   });
@@ -115,33 +113,6 @@ describe("SuperpowerNFT", function () {
       expect(game.isNFTPlayable(farm.address)).reverted;
     });
 
-
-  });
-
-  describe.only("Whitelist Test", async function () {
-    beforeEach(async function () {
-      await initAndDeploy();
-      await configure();
-    });
-
-
-    it("should check if set URI sets URI", async function () {
-    expect(await wl.uri(0)).equal("")
-    await wl.setURI("hi")
-    expect(await wl.uri(0)).equal("hi")
-    await wl.setURI("WHITELIST")
-    expect(await wl.uri(0)).equal("WHITELIST")
-    });
-
-    it("should check set burner and get ID", async function () {
-      await wl.setBurnerForID(nft.address , 55)
-    expect(await wl.getIdByBurner(nft.address)).equal(55)
-    await wl.setBurnerForID(nft.address , 100)
-    expect(await wl.getIdByBurner(nft.address)).equal(100)
-
-
-
-      });
 
   });
 });
