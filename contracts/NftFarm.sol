@@ -40,7 +40,10 @@ contract NftFarm is Initializable, UUPSUpgradeable, OwnableUpgradeable {
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() initializer {}
 
-  function initialize() public initializer {}
+  function initialize() public initializer {
+    __Ownable_init();
+    __UUPSUpgradeable_init();
+  }
 
   function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
