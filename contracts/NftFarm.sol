@@ -88,7 +88,7 @@ contract NftFarm is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     return 0;
   }
 
-  function buyTokens(uint8 nftId, uint256 amount) external payable onlyFarmer(nftId) {
+  function buyTokens(uint8 nftId, uint256 amount) external payable {
     require(msg.value >= _prices[nftId].mul(amount), "NftFarm: insufficient payment");
     proceedsBalance += msg.value;
     _nfts[nftId].mintAndInit(_msgSender(), amount);
