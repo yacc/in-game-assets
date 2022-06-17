@@ -9,7 +9,7 @@ import "@ndujalabs/erc721playable/contracts/IERC721Playable.sol";
 interface ISuperpowerNFT {
   function setMaxSupply(uint256 maxSupply_) external;
 
-  function setMinter(address minter_, bool enabled) external;
+  function setFarmer(address farmer_, bool enabled) external;
 
   function mint(address recipient, uint256 amount) external;
 
@@ -19,10 +19,7 @@ interface ISuperpowerNFT {
     uint8[31] memory initialAttributes
   ) external;
 
-  function mintAndInit(
-    address to,
-    address player
-  ) external;
+  function mintAndInit(address to, uint256 amount) external;
 
   function endMinting() external;
 
