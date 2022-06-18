@@ -4,17 +4,15 @@ pragma solidity 0.8.11;
 // Author : Francesco Sullo < francesco@superpower.io>
 // (c) Superpower Labs Inc.
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
+import "soliutils/contracts/UUPSUpgradableTemplate.sol";
 
 import "./interfaces/ISuperpowerNFT.sol";
 
 //import "hardhat/console.sol";
 
-contract NftFarm is Initializable, UUPSUpgradeable, OwnableUpgradeable {
+contract NftFarm is UUPSUpgradableTemplate {
   using AddressUpgradeable for address;
   using SafeMathUpgradeable for uint256;
 
@@ -37,12 +35,8 @@ contract NftFarm is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     _;
   }
 
-  /// @custom:oz-upgrades-unsafe-allow constructor
-  constructor() initializer {}
-
   function initialize() public initializer {
-    __Ownable_init();
-    __UUPSUpgradeable_init();
+    __UUPSUpgradableTemplate_init();
   }
 
   function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}

@@ -44,6 +44,7 @@
     "require-or-mock": "^0.2.1",
     "solhint": "^3.3.6",
     "solidity-coverage": "^0.7.21",
+    "soliutils": "^0.0.2",
     "typescript": "^4.7.3"
   }
 }
