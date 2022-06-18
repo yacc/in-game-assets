@@ -55,7 +55,10 @@ contract SuperpowerNFT is ISuperpowerNFT, SuperpowerNFTBase {
     if (wl != address(0)) {
       require(wl.isContract(), "SuperpowerNFT: wl not a contract");
       _wl = WhitelistSlot(wl);
-    } // else we just want to update period and ERC1155 id on WhitelistSlot
+    } // else we just want to update period of whitelisting
+    if (activeUntil == 0) {
+      activeUntil = block.timestamp;
+    }
     _whitelistActiveUntil = activeUntil;
   }
 

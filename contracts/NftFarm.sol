@@ -76,6 +76,10 @@ contract NftFarm is UUPSUpgradableTemplate {
     emit NewPriceFor(nftId, price);
   }
 
+  function getPrice(uint8 nftId) external view returns (uint256) {
+    return _prices[nftId];
+  }
+
   function nftIdByFarmer(address farmer) public view returns (uint8) {
     for (uint8 i = 0; i < _lastNft + 1; i++) {
       if (_farmers[i] == farmer) {

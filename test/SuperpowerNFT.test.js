@@ -1,8 +1,6 @@
 const {expect, assert} = require("chai");
 
-const {
-  initEthers,
-} = require("./helpers");
+const {initEthers} = require("./helpers");
 
 // tests to be fixed
 
@@ -35,13 +33,11 @@ describe("SuperpowerNFT", function () {
 
     game = await upgrades.deployProxy(Game, []);
     await game.deployed();
-
-
   }
 
   async function configure() {
-    await nft.setMaxSupply(1000)
-    await nft.setFarmer(farm.address, true)
+    await nft.setMaxSupply(1000);
+    await nft.setFarmer(farm.address, true);
   }
 
   describe("constructor and initialization", async function () {
@@ -55,7 +51,6 @@ describe("SuperpowerNFT", function () {
   });
 
   describe("#game simulation", async function () {
-
     // from https://github.com/ndujaLabs/erc721playable/blob/main/test/ERC721PlayableUpgradeable.test.js
 
     beforeEach(async function () {
@@ -75,10 +70,10 @@ describe("SuperpowerNFT", function () {
       await farm.mintTokens(holder.address, 1);
       await nft.connect(holder).initAttributes(1, game.address);
       await game.fillInitialAttributes(
-          nft.address,
-          1,
-          0, // keeps the existent version
-          [1, 5, 34, 21, 8, 0, 34, 12, 31, 65, 178, 243, 2]
+        nft.address,
+        1,
+        0, // keeps the existent version
+        [1, 5, 34, 21, 8, 0, 34, 12, 31, 65, 178, 243, 2]
       );
 
       const attributes = await nft.attributesOf(1, game.address);
@@ -90,10 +85,10 @@ describe("SuperpowerNFT", function () {
       await farm.mintTokens(holder.address, 1);
       await nft.connect(holder).initAttributes(1, game.address);
       await game.fillInitialAttributes(
-          nft.address,
-          1,
-          0, // keeps the existent version
-          [1, 5, 34, 21, 8, 0, 34, 12, 31, 65, 178, 243, 2]
+        nft.address,
+        1,
+        0, // keeps the existent version
+        [1, 5, 34, 21, 8, 0, 34, 12, 31, 65, 178, 243, 2]
       );
 
       let attributes = await nft.attributesOf(1, game.address);
@@ -110,7 +105,5 @@ describe("SuperpowerNFT", function () {
       assert.isTrue(await game.isNFTPlayable(nft.address));
       expect(game.isNFTPlayable(farm.address)).reverted;
     });
-
-
   });
 });
