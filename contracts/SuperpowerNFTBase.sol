@@ -161,5 +161,5 @@ contract SuperpowerNFTBase is
     return super.isApprovedForAll(owner, operator);
   }
 
-  // manage transfer
+  uint256[50] private __gap;
 }
