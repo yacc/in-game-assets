@@ -10,7 +10,7 @@ import "soliutils/contracts/UUPSUpgradableTemplate.sol";
 
 import "./interfaces/ISuperpowerNFT.sol";
 
-import "hardhat/console.sol";
+//import "hardhat/console.sol";
 
 contract NftFarm is UUPSUpgradableTemplate {
   using AddressUpgradeable for address;
@@ -76,7 +76,7 @@ contract NftFarm is UUPSUpgradableTemplate {
     emit NewPriceFor(nftId, price);
   }
 
-  function getPrice(uint8 nftId) external view returns (uint) {
+  function getPrice(uint8 nftId) external view returns (uint256) {
     return _prices[nftId];
   }
 
