@@ -10,7 +10,7 @@ import "soliutils/contracts/UUPSUpgradableTemplate.sol";
 
 import "./interfaces/ISuperpowerNFT.sol";
 
-//import "hardhat/console.sol";
+import "hardhat/console.sol";
 
 contract NftFarm is UUPSUpgradableTemplate {
   using AddressUpgradeable for address;
@@ -74,6 +74,10 @@ contract NftFarm is UUPSUpgradableTemplate {
     require(address(_nfts[nftId]) != address(0), "NftFarm: token not found");
     _prices[nftId] = price;
     emit NewPriceFor(nftId, price);
+  }
+
+  function getPrice(uint8 nftId) external view returns (uint) {
+    return _prices[nftId];
   }
 
   function nftIdByFarmer(address farmer) public view returns (uint8) {
