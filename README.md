@@ -17,7 +17,7 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 ```
 
-Opening a new terminal, you should be able to access nvm. If not, add the lines abo-e in your profile file, and source it.
+Opening a new terminal, you should be able to access nvm. If not, add the lines above in your profile file, and source it.
 
 When nvm is installed, you can install node with a command like
 ``` 
@@ -50,7 +50,7 @@ Launch it. Then, configure a server compatible with Hardhat node. To do so, in W
 ```
 test test test test test test test test test test test junk
 ```
-When don, run the server. Now, you have a local blockchain ready for the job.
+When done, run the server. Now, you have a local blockchain ready for the job.
 
 ### 4 - Tasks
 To compile the smart contracts
