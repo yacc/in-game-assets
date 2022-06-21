@@ -6,5 +6,5 @@ rm -rf artifacts
 npx hardhat compile
 
 node scripts/exportABIs.js
-#cp export/ABIs.json ../app-everdragons2/client/config/.
-#cp export/deployed.json ../app-everdragons2/client/config/.
+cp export/ABIs.json ../sales-app/src/config/.
+cp export/deployed.json ../sales-app/src/config/.
