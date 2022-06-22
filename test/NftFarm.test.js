@@ -5,7 +5,7 @@ const {getCurrentTimestamp} = require("hardhat/internal/hardhat-network/provider
 
 // tests to be fixed
 
-describe("NftFarm", function () {
+describe.only("NftFarm", function () {
   let owner, whitelisted, notWhitelisted;
   let Whitelist, wl;
   let SuperpowerNFT, nft;
@@ -35,7 +35,7 @@ describe("NftFarm", function () {
     const amount = 5;
     await wl.mintBatch(whitelisted.address, [id], [amount], []);
     await wl.setBurnerForID(nft.address, id);
-    await nft.setWhitelist(wl.address, (await getCurrentTimestamp()) + 1e4);
+    await nft.setWhitelist(wl.address, ( getCurrentTimestamp()) + 1e4);
     await nft.setFarmer(farm.address, true);
     await farm.setNewNft(nft.address);
     await farm.setPrice(1, ethers.utils.parseEther("1"));
@@ -72,7 +72,7 @@ describe("NftFarm", function () {
       ).revertedWith("SuperpowerNFT: defaultPlayer not set");
     });
 
-    it("should buy tokens", async function () {
+    it.only("should buy tokens", async function () {
       await nft.setMaxSupply(1000);
       await nft.setDefaultPlayer(game.address);
 
@@ -80,8 +80,8 @@ describe("NftFarm", function () {
       expect(await wl.balanceOf(whitelisted.address, 1)).equal(5);
 
       expect(
-        await farm.connect(whitelisted).buyTokens(1, 3, {
-          value: ethers.BigNumber.from(await farm.getPrice(1)).mul(3),
+        await farm.connect(whitelisted).buyTokens(1, 4, {
+          value: ethers.BigNumber.from(await farm.getPrice(1)).mul(4),
         })
       )
         .to.emit(nft, "Transfer")
@@ -91,8 +91,9 @@ describe("NftFarm", function () {
         .to.emit(nft, "Transfer")
         .withArgs(ethers.constants.AddressZero, whitelisted.address, 3);
 
-      expect(await nft.nextTokenId()).equal(4);
-      expect(await wl.balanceOf(whitelisted.address, 1)).equal(2);
+      expect(await nft.nextTokenId()).equal(5);
+      console.log(await nft.balanceOf(whitelisted.address))
+      expect(await wl.balanceOf(whitelisted.address, 1)).equal(1);
     });
 
     it("should can not buy tokens because not whitelisted", async function () {

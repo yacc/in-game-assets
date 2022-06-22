@@ -67,8 +67,8 @@ async function main() {
   await nft.setDefaultPlayer(game.address);
 
 
-  await farm.connect(whitelisted).buyTokens(1, 1, {
-    value: ethers.BigNumber.from(await farm.getPrice(1)),
+  await farm.connect(whitelisted).buyTokens(1, 2, {
+    value: ethers.BigNumber.from((await farm.getPrice(1)).mul(2)),
   })
 
 
@@ -81,6 +81,10 @@ async function main() {
 
   let prefix = /turf/i.test(NAME) ? "TurfToken" : /farm/i.test(NAME) ? "FarmToken" : SYMBOL;
   await deployUtils.saveDeployed(chainId, [`${prefix}|SuperpowerNFT`], [nft.address])
+  await deployUtils.saveDeployed(chainId, [`NftFarm`], [farm.address])
+  await deployUtils.saveDeployed(chainId, [`WhitelistSlot`], [wl.address])
+
+
 }
 
 // We recommend this pattern to be able to use async/await everywhere
